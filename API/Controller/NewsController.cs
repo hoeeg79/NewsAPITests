@@ -25,7 +25,7 @@ public class NewsController
     [Route("/api/articles")]
     public IEnumerable<Articles> GetAllArticles()
     {
-        return _service.GetAllAritcles();
+        return _service.GetAllArticles();
     }
     
     [HttpPost]
@@ -33,5 +33,27 @@ public class NewsController
     public Articles PostArticle(Articles articles)
     {
         return _service.CreateArticle(articles);
+    }
+
+
+    [HttpGet]
+    [Route("/api/articles/{id}")]
+    public Articles GetSpecificArticle([FromRoute] int articleId)
+    {
+        return _service.GetSpecificArticle(articleId);
+    }
+
+    [HttpDelete]
+    [Route("/api/articles/{id}")]
+    public void DeleteArticle([FromRoute] int articleId)
+    {
+        _service.DeleteArticle(articleId);
+    }
+
+    [HttpPut]
+    [Route("/api/articles/{id}")]
+    public Articles UpdateArticle([FromRoute] int articleId, [FromBody] Articles articlesDTO)
+    {
+        return _service.UpdateArticle(articleId, articlesDTO);
     }
 }
