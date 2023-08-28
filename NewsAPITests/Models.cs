@@ -9,7 +9,6 @@ public class Article
     public string ArticleImgUrl { get; set; }
 }
 
-
 public class SearchArticleItem
 {
     public string Headline { get; set; }
