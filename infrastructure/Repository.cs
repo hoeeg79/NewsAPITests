@@ -6,7 +6,6 @@ namespace infrastructure;
 
 public class Repository
 {
-    private readonly string[] validAuthors = {"Bob", "Rob", "Dob", "Lob"};
 
     private readonly NpgsqlDataSource _dataSource;
 
@@ -19,15 +18,12 @@ public class Repository
         var sql = $@"INSERT INTO news.articles (headline, body, author, articleimgurl) " +
                   "VALUES (@Headline, @Body, @Author, @ArticleImgUrl) " +
                   "RETURNING *;";
-        if (validAuthors.Contains(articles.Author))
+        
+        using (var conn = _dataSource.OpenConnection())
         {
-            using (var conn = _dataSource.OpenConnection())
-            {
-                return conn.QueryFirst<Articles>(sql, articles);
-            }
+            return conn.QueryFirst<Articles>(sql, articles);
         }
-
-        throw new Exception("Invalid author given");
+    
     }
 
     public IEnumerable<NewsFeedItem> GetFeed()
@@ -73,22 +69,17 @@ public class Repository
                          WHERE articleid = @articleId 
                          RETURNING *;";
 
-        if (validAuthors.Contains(articlesDto.Author))
+        using (var conn = _dataSource.OpenConnection())
         {
-            using (var conn = _dataSource.OpenConnection())
+            return conn.QueryFirst<Articles>(sql, new
             {
-                return conn.QueryFirst<Articles>(sql, new
-                {
-                    articlesDto.Headline,
-                    articlesDto.Body,
-                    articlesDto.Author,
-                    articlesDto.ArticleImgUrl,
-                    articleId
-                });
-            }
+                articlesDto.Headline,
+                articlesDto.Body,
+                articlesDto.Author,
+                articlesDto.ArticleImgUrl,
+                articleId
+            });
         }
-
-        throw new Exception("Invalid choice of author");
     }
 
     public IEnumerable<Articles> SearchArticles(string query, int pageSize)
