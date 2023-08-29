@@ -44,7 +44,7 @@ public class SearchArticles
             }
         }
 
-        var url = $"http://localhost:5000/api/articles?searchTerm={searchterm}&pagesize={pageSize}";
+        var url = $"http://localhost:5000/api/articles?searchterm={searchterm}&pagesize={pageSize}";
         HttpResponseMessage response;
         try
         {
@@ -84,7 +84,7 @@ public class SearchArticles
         try
         {
             response = await _httpClient.GetAsync(
-                $"http://localhost:5000/api/articles?searchTerm={searchterm}&pagesize={pageSize}");
+                $"http://localhost:5000/api/articles?searchterm={searchterm}&pagesize={pageSize}");
             TestContext.WriteLine("THE FULL BODY RESPONSE: " + await response.Content.ReadAsStringAsync());
         }
         catch (Exception e)

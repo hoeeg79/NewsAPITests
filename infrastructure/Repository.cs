@@ -6,6 +6,8 @@ namespace infrastructure;
 
 public class Repository
 {
+    private readonly string[] validAuthors = {"Bob", "Rob", "Dob", "Lob"};
+
     private readonly NpgsqlDataSource _dataSource;
 
     public Repository(NpgsqlDataSource dataSource)
@@ -14,7 +16,6 @@ public class Repository
     }
     public Articles CreateArticle(Articles articles)
     {
-        string[] validAuthors = {"Bob", "Rob", "Dob", "Lob"};
         var sql = $@"INSERT INTO news.articles (headline, body, author, articleimgurl) " +
                   "VALUES (@Headline, @Body, @Author, @ArticleImgUrl) " +
                   "RETURNING *;";
@@ -27,16 +28,6 @@ public class Repository
         }
 
         throw new Exception("Invalid author given");
-    }
-
-    public IEnumerable<Articles> GetAllArticles()
-    {
-        var sql = "SELECT * FROM news.articles;";
-
-        using (var conn = _dataSource.OpenConnection())
-        {
-            return conn.Query<Articles>(sql);
-        }
     }
 
     public IEnumerable<NewsFeedItem> GetFeed()
@@ -78,19 +69,36 @@ public class Repository
                          headline = @Headline, 
                          body = @Body, 
                          author = @Author, 
-                         articleimgurl = @articleimgurl 
+                         articleimgurl = @ArticleImgUrl 
                          WHERE articleid = @articleId 
                          RETURNING *;";
+
+        if (validAuthors.Contains(articlesDto.Author))
+        {
+            using (var conn = _dataSource.OpenConnection())
+            {
+                return conn.QueryFirst<Articles>(sql, new
+                {
+                    articlesDto.Headline,
+                    articlesDto.Body,
+                    articlesDto.Author,
+                    articlesDto.ArticleImgUrl,
+                    articleId
+                });
+            }
+        }
+
+        throw new Exception("Invalid choice of author");
+    }
+
+    public IEnumerable<Articles> SearchArticles(string query, int pageSize)
+    {
+        var sql = @"SELECT * FROM news.articles " +
+                  "WHERE body LIKE '%' || @query || '%' OR headline LIKE '%' || @query || '%' LIMIT @pageSize;";
+
         using (var conn = _dataSource.OpenConnection())
         {
-            return conn.QueryFirstOrDefault<Articles>(sql, new
-            {
-                articleId,
-                articlesDto.Headline,
-                articlesDto.Body,
-                articlesDto.Author,
-                articlesDto.ArticleImgUrl
-            });
+            return conn.Query<Articles>(sql, new {query, pageSize});
         }
     }
 }

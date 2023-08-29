@@ -17,11 +17,6 @@ public class Service
         return _repository.CreateArticle(articles);
     }
 
-    public IEnumerable<Articles> GetAllArticles()
-    {
-        return _repository.GetAllArticles();
-    }
-
     public IEnumerable<NewsFeedItem> GetFeed()
     {
         return _repository.GetFeed();
@@ -40,5 +35,10 @@ public class Service
     public Articles UpdateArticle(int articleId, Articles articlesDto)
     {
         return _repository.UpdateArticle(articleId, articlesDto);
+    }
+
+    public IEnumerable<Articles> SearchArticles(string query, int pageSize)
+    {
+        return _repository.SearchArticles(query, pageSize);
     }
 }

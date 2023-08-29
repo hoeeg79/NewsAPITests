@@ -20,14 +20,7 @@ public class NewsController
     {
         return _service.GetFeed();
     }
-    
-    [HttpGet]
-    [Route("/api/articles")]
-    public IEnumerable<Articles> GetAllArticles()
-    {
-        return _service.GetAllArticles();
-    }
-    
+
     [HttpPost]
     [Route("/api/articles")]
     public Articles PostArticle(Articles articles)
@@ -37,23 +30,35 @@ public class NewsController
 
 
     [HttpGet]
-    [Route("/api/articles/{id}")]
+    [Route("/api/articles/{articleId}")]
     public Articles GetSpecificArticle([FromRoute] int articleId)
     {
         return _service.GetSpecificArticle(articleId);
     }
 
     [HttpDelete]
-    [Route("/api/articles/{id}")]
+    [Route("/api/articles/{articleId}")]
     public void DeleteArticle([FromRoute] int articleId)
     {
         _service.DeleteArticle(articleId);
     }
 
     [HttpPut]
-    [Route("/api/articles/{id}")]
+    [Route("/api/articles/{articleId}")]
     public Articles UpdateArticle([FromRoute] int articleId, [FromBody] Articles articlesDTO)
     {
         return _service.UpdateArticle(articleId, articlesDTO);
+    }
+
+    [HttpGet]
+    [Route("/api/articles")]
+    public IEnumerable<Articles> SearchArticles([FromQuery] string searchterm, [FromQuery] int pagesize)
+    {
+        if (pagesize > 0 && searchterm.Length>3)
+        {
+            return _service.SearchArticles(searchterm, pagesize);
+        }
+
+        throw new Exception("Your search term were too short, or pagesize were too low.");
     }
 }
