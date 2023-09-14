@@ -24,6 +24,13 @@ jobs:
         with:
           dotnet-version: | 
             8.0.x
-            
-      - name: Start API and run tests
-        run: ls
+
+      - name: Change directory to API
+        run: cd /API
+        
+      - name: Start API
+        run: dotnet run
+
+      - name: Shutdown API
+        run: kill -9 $(lsof -t -i:5000)
+
