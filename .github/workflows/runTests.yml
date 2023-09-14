@@ -29,7 +29,7 @@ jobs:
         run: cd API
         
       - name: Start API and shutdown API
-        run: (sleep 20 && dotnet run) && kill -9 $(lsof -t -i:5000)
+        run: dotnet run && (sleep 20 && kill -9 $(lsof -t -i:5000))
         env:
-               variablename: ${{secrets.variablename}}
+               variablename: ${{secrets.pgconn}}
 
