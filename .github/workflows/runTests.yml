@@ -24,12 +24,9 @@ jobs:
         with:
           dotnet-version: | 
             8.0.x
-
-      - name: Change directory to API
-        run: cd /home/runner/work/NewsAPITests/NewsAPITests/API
-        
+            
       - name: Start API and shutdown API
-        run: dotnet run && (sleep 20 && kill -9 $(lsof -t -i:5000))
+        run: cd API && dotnet run && (sleep 20 && kill -9 $(lsof -t -i:5000))
         env:
                variablename: ${{secrets.pgconn}}
 
