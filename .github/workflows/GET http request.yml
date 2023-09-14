@@ -1,0 +1,10 @@
+name: GET http request
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      run: curl https://dummyjson.com/products/1
