@@ -26,7 +26,7 @@ jobs:
             8.0.x
             
       - name: Start API and shutdown API
-        run: cd API && dotnet run && (sleep 20 && kill -9 $(lsof -t -i:5000))
+        run: cd API && dotnet run & (sleep 20 && kill -9 $(lsof -t -i:5000))
         env:
                pgconn: ${{secrets.pgconn}}
 
