@@ -26,7 +26,7 @@ jobs:
             8.0.x
 
       - name: Change directory to API
-        run: cd API
+        run: cd /home/runner/work/NewsAPITests/NewsAPITests/API
         
       - name: Start API and shutdown API
         run: dotnet run && (sleep 20 && kill -9 $(lsof -t -i:5000))
