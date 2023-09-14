@@ -26,11 +26,10 @@ jobs:
             8.0.x
 
       - name: Change directory to API
-        run: cd /API
+        run: cd API
         
-      - name: Start API
-        run: dotnet run
-
-      - name: Shutdown API
-        run: kill -9 $(lsof -t -i:5000)
+      - name: Start API and shutdown API
+        run: (sleep 20 && dotnet run) && kill -9 $(lsof -t -i:5000)
+        env:
+               variablename: ${{secrets.variablename}}
 
